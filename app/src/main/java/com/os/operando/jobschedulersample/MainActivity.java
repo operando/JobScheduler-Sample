@@ -5,6 +5,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,12 +27,17 @@ public class MainActivity extends AppCompatActivity {
                 ComponentName serviceName = new ComponentName(MainActivity.this, MyJobService.class);
                 JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
                 for (int i = 0; i < 1; i++) {
+                    PersistableBundle persistableBundle = new PersistableBundle();
+                    persistableBundle.putInt("id", i);
                     JobInfo jobInfo = new JobInfo.Builder(i, serviceName)
 //                            .setMinimumLatency(3000)
 //                            .setOverrideDeadline(60000)
                             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                             .setPeriodic(1000)
+                            .setRequiresCharging(true)
                             .setPersisted(true)
+                            .setRequiresDeviceIdle(true)
+                            .setExtras(persistableBundle)
                             .build();
                     scheduler.schedule(jobInfo);
                 }
@@ -48,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+//        scheduler.cancelAll();
     }
 }
 
