@@ -23,16 +23,35 @@ public class MyJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Log.d(Tags.JOB_SCHEDULER, "Start Job id = " + params.getJobId());
+        Log.d(Tags.JOB_SCHEDULER, "onStartJob Job id = " + params.getJobId());
         PersistableBundle persistableBundle = params.getExtras();
+        new Thread(new TestRunnable(params)).start();
         Log.d(Tags.JOB_SCHEDULER, "Extras id = " + persistableBundle.getInt("id"));
-        jobFinished(params, false);
         return true;
     }
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Log.d(Tags.JOB_SCHEDULER, "End Job id = " + params.getJobId());
+        Log.d(Tags.JOB_SCHEDULER, "onStopJob Job id = " + params.getJobId());
         return false;
+    }
+
+    private class TestRunnable implements Runnable {
+
+        private JobParameters mParams;
+
+        public TestRunnable(JobParameters params) {
+            mParams = params;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(60000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            jobFinished(mParams, false);
+        }
     }
 }
