@@ -16,12 +16,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private int jobId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.schedule_jobs).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ComponentName serviceName = new ComponentName(MainActivity.this, MyJobService.class);
@@ -30,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
                     PersistableBundle persistableBundle = new PersistableBundle();
                     persistableBundle.putInt("id", i);
                     JobInfo jobInfo = new JobInfo.Builder(i, serviceName)
-                            .setMinimumLatency(3000)
-                            .setOverrideDeadline(60000)
+//                            .setMinimumLatency(3000)
+//                            .setOverrideDeadline(60000)
                             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
 //                            .setPeriodic(1000)
 //                            .setRequiresCharging(true)
@@ -42,6 +44,29 @@ public class MainActivity extends AppCompatActivity {
                     scheduler.schedule(jobInfo);
                     Log.d(Tags.JOB_SCHEDULER, "Set Job.Job id = " + i);
                 }
+            }
+        });
+
+        findViewById(R.id.schedule_job).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ComponentName serviceName = new ComponentName(MainActivity.this, MyJobService.class);
+                JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                PersistableBundle persistableBundle = new PersistableBundle();
+                persistableBundle.putInt("id", jobId);
+                JobInfo jobInfo = new JobInfo.Builder(jobId, serviceName)
+//                        .setMinimumLatency(3000)
+//                        .setOverrideDeadline(60000)
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+//                            .setPeriodic(1000)
+//                            .setRequiresCharging(true)
+//                            .setPersisted(true)
+//                            .setRequiresDeviceIdle(true)
+                        .setExtras(persistableBundle)
+                        .build();
+                scheduler.schedule(jobInfo);
+                Log.d(Tags.JOB_SCHEDULER, "Set Job.Job id = " + jobId);
+                jobId++;
             }
         });
 

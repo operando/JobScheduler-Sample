@@ -11,10 +11,16 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/schedule_jobs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Schedule jobs" />
+
+    <Button
+        android:id="@+id/schedule_job"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Schedule job" />
 
     <Button
         android:id="@+id/get_jobs"
